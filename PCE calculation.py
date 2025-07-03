@@ -1,46 +1,39 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jan 27 10:53:12 2025
-
-@author: LocalAdmin
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import cmath
 from scipy.integrate import cumtrapz, simps # Import cumtrapz and simps
 
-# 基础常数和参数定义
+# Basic constants and parameter definitions
 sqrt = np.sqrt
 pi = np.pi
 e = np.e
 
-# 定义常量
+# Define constants
 k12 = 0.04
 Q1 = 133.34
 Q2 = 19.2
 L1 = 559e-9  # 559 nH
 L2 = 63e-9   # 63 nH
 f = 40.68e6  # 40.68 MHz
-w = 2 * pi * f  # 角频率
+w = 2 * pi * f  # Angular frequency
 ωp = w
 
-# 电阻和电容计算
+# Resistor and capacitor calculation
 R1 = w * L1 / Q1
-R2 = w * L2 / Q2   # R2 的计算
+R2 = w * L2 / Q2   # R2 calculation
 C1 = 1 / (w**2 * L1)
 C2 = 1 / (w**2 * L2)
 M12 = k12 * sqrt(L1 * L2)
 
 
 R1 = w * L1 / Q1
-R2 = w * L2 / Q2   # R2 的计算
+R2 = w * L2 / Q2   # R2 calculation
 C1 = 1 / (w**2 * L1)
 C2 = 1 / (w**2 * L2)
 M12 = k12 * sqrt(L1 * L2)
 
-# 输入电压和其他参数
-V21_force = 11.54 / 2  # 输入电压的一半
+# Input voltage and other parameters
+V21_force = 11.54 / 2  # Half of input voltage
 
 RSW = 0.5
 force_en = 0
@@ -49,37 +42,35 @@ Vs = 0.29
 V21 = Vs * w * M12 / (R1 + (w**2 * M12**2) / (R2 + RSW))
 Req=R2+RSW
 
-#################
+
 
 vcross=0.2
 RSW_HV=15
-######################
+
 #VL_k_1=3.638   #1.57
 #N0=40
 
 #VL_k_1=3.515   #1.57
 #N0=50
 
-VL_k_1=2.4   #1.57              ##########################  important      #######################
-Cpar=24e-12*2                   ##########################  important      #######################
-N0=78                              ##########################  important      #######################
+VL_k_1=2.4   #1.57           
+Cpar=24e-12*2                
+N0=78                        
 
 RHV=100e3    
 
 
-
-                          ##########################  important      #######################
-#VLV=1.053                         ##########################  important      ###################
-VLV=0.9672   #not important
-#VLV_min=0.9647471    ##########################     important      ###################
+VLV=0.9672   
 
 
+#############################   manual change ###############################
 VLV_min=0.9647471
-#VLV_min=0.9193
-N0_lower_manual=40  ###############################################                 manual change
-iL2_max=80e-3                   ##########################  important      #######################
+N0_lower_manual=40 
+##############################################################
+
+iL2_max=80e-3 
 CLV=2e-9 
-#RLV=100           #############################                 manual change 
+#RLV=100      
 RLV=200
 '''   RLV=200
 N0=2, VLV_MIN=0.7062098
@@ -118,11 +109,6 @@ N0=10000, VLV_MIN=0.9193
 
 '''
 
-'''   CLV=1nF
-
-N0=40, VLV_MIN=0.904055
-
-'''
 
 
 beta=0.778   #0.778
@@ -277,14 +263,14 @@ Q2eq=w*L2/Req
 #Q2eq=Q2
 V21_q=Vs*k12*sqrt(Q1*Q2eq)*sqrt(Req)/(1+k12**2*Q1*Q2eq)/sqrt(R1)   
 V21=V21_q
-# 定义 a
-#a = R2 / (2 * L2)  # 计算 a
-a = (R2+RSW) / (2 * L2)  # 计算 a
+# Define a
+#a = R2 / (2 * L2)  # Calculate a
+a = (R2+RSW) / (2 * L2)  # Calculate a
 
-# 定义时间范围，修改为从 0 到 1 微秒
-t = np.linspace(0, int(N0_lower_manual * 1) / f, 1000)  # 从 0 到 1 微秒
+# Define time range, modified from 0 to 1 microsecond
+t = np.linspace(0, int(N0_lower_manual * 1) / f, 1000)  # From 0 to 1 microsecond
 
-# 定义 IL2
+# Define IL2
 #IL2 = (abs(V21) * #       ( (-e**(-t * (a + w)) * (-1 + e**(2 * t * w)))*1 + 2 * np.sin(w * t)) ) / (2 * (Req))
 
 Req=R2+RSW
@@ -306,23 +292,22 @@ IL2 = abs(V21)/Req *np.sin(w*t)+ e**(-a*t)*np.sin(wd*t)*bracket*1
 print('IL2_MAX=',max(IL2))
   
 
-
-# -------------------- 提取正半轴最大值（前 N0 个） --------------------
+# -------------------- Extract maximum values of the positive half-axis (first N0) --------------------
 from scipy.signal import find_peaks
 
-# 计算一个周期的长度（单位为秒）
+# Calculate the length of one period (in seconds)
 T = 1 / f
 
-# 获取 t 和 IL2
-dt = t[1] - t[0]  # 时间步长
-samples_per_half_cycle = int(T / 2 / dt)  # 每个正半周期的样本数
+# Get t and IL2
+dt = t[1] - t[0]  # Time step
+samples_per_half_cycle = int(T / 2 / dt)  # Number of samples per positive half cycle
 
-samples_per_half_cycle = int(T / 2 / dt)  # 每个正半周期的样本数
+samples_per_half_cycle = int(T / 2 / dt)  # Number of samples per positive half cycle
 
-# 找所有峰值索引
+# Find all peak indices
 peaks, _ = find_peaks(-IL2, height=1e-3)
 
-# 强制添加最后一个点（如果它是局部峰值）
+# Force add the last point (if it's a local peak)
 if len(IL2) > 1 and IL2[-2] < IL2[-1]:
     peaks = np.append(peaks, len(IL2) - 1)
 
@@ -330,12 +315,12 @@ if len(IL2) > 1 and IL2[-2] < IL2[-1]:
 #positive_half_indices = [p for p in peaks]
 positive_half_indices = list(peaks)
 
-# 对正半轴的峰值按时间顺序排序，提取前 N0 个
+# Sort positive half-axis peaks by time, extract the first N0
 positive_half_peaks = sorted(positive_half_indices[:N0_lower_manual])
 il2_positive_max_values = [-IL2[p] for p in positive_half_peaks]
 il2_positive_peaks=il2_positive_max_values
-# 输出
-print(f'\n前 {N0} 个正半轴 IL2(t) 峰值：')
+# Output
+print(f'\nFirst {N0} positive half-axis IL2(t) peaks:')
 for i, val in enumerate(il2_positive_max_values):
     print(f'Cycle {i+1}: IL2 max = {val:.6f} A')
 
@@ -353,12 +338,12 @@ for i, val in enumerate(il2_positive_max_values):
 
 
 N0_lower=10000
-# 计算 VLV_min_new，确保其随 N0_lower 按照规则迭代
-VLV_min_new = VLV_min  # 初始化 VLV_min_new
-num_iterations = int(N0_lower * 1)  # 计算迭代次数，每 0.5 增加一次
+# Calculate VLV_min_new, ensuring it iterates according to rules with N0_lower
+VLV_min_new = VLV_min  # Initialize VLV_min_new
+num_iterations = int(N0_lower * 1)  # Calculate number of iterations, increasing by 0.5 each time
 
 for _ in range(num_iterations):
-    vlv_n1 = VLV_min_new  # 更新 vlv_n1 为当前 VLV_min_new
+    vlv_n1 = VLV_min_new  # Update vlv_n1 to current VLV_min_new
     term1 = (vlv_n1 - vcross + vdrop_lv * 1) * w * C2 / (iL2_max * cpar_coeff)
     tch_lv = np.arcsin(term1) / w
     Il2_tchlv = iL2_max * np.cos(w * tch_lv)
@@ -367,20 +352,20 @@ for _ in range(num_iterations):
     vlv_t2 = vlv_n1 + vlv_ch
 
     vlv_disch = vlv_t2 * (1 - np.exp(-tdisch_lv / RLV / CLV))
-    dvlv = vlv_ch - vlv_disch  # 计算新的 dvlv
-    VLV_min_new += dvlv  # 更新 VLV_min_new
+    dvlv = vlv_ch - vlv_disch  # Calculate new dvlv
+    VLV_min_new += dvlv  # Update VLV_min_new
 
 Power_lv_stable = VLV_min_new**2 / RLV
 VLV_stable=VLV_min_new
 
-# 计算 VLV_min_new，确保其随 N0_lower_manual 按照规则迭代
-VLV_min_new = VLV_min  # 初始化 VLV_min_new
-VAC_conducted = VLV_min+vdrop_lv  # 初始化 VLV_min_new
+# Calculate VLV_min_new, ensuring it iterates according to rules with N0_lower_manual
+VLV_min_new = VLV_min  # Initialize VLV_min_new
+VAC_conducted = VLV_min+vdrop_lv  # Initialize VLV_min_new
 
 
-num_iterations = int(N0_lower_manual * 1)  # 计算迭代次数，每 0.5 增加一次
-vlv_min_list = [VLV_min_new]  # 用于存储每次迭代的 VLV_min_new
-VAC_list = [VAC_conducted]  # 用于存储每次迭代的 VAC_conducted
+num_iterations = int(N0_lower_manual * 1)  # Calculate number of iterations, increasing by 0.5 each time
+vlv_min_list = [VLV_min_new]  # List to store VLV_min_new for each iteration
+VAC_list = [VAC_conducted]  # List to store VAC_conducted for each iteration
 
 
 
@@ -398,7 +383,7 @@ VAC_list = [VAC_conducted]  # 用于存储每次迭代的 VAC_conducted
 
 
 for _ in range(num_iterations):
-    vlv_n1 = VLV_min_new  # 更新 vlv_n1 为当前 VLV_min_new
+    vlv_n1 = VLV_min_new  # Update vlv_n1 to current VLV_min_new
     
     #iL2_test = il2_positive_peaks[i % len(il2_positive_peaks)]
     #iL2_test = il2_positive_peaks[2]
@@ -412,20 +397,20 @@ for _ in range(num_iterations):
     vlv_t2 = vlv_n1 + vlv_ch
 
     vlv_disch = vlv_t2 * (1 - np.exp(-tdisch_lv / RLV / CLV))
-    dvlv = vlv_ch - vlv_disch  # 计算新的 dvlv
-    VLV_min_new += dvlv  # 更新 VLV_min_new
+    dvlv = vlv_ch - vlv_disch  # Calculate new dvlv
+    VLV_min_new += dvlv  # Update VLV_min_new
     VAC_conducted = vdrop_lv+VLV_min_new
     
-    vlv_min_list.append(VLV_min_new)  # 记录 VLV_min_new
-    VAC_list.append(VAC_conducted)  # 记录 VLV_min_new
+    vlv_min_list.append(VLV_min_new)  # Record VLV_min_new
+    VAC_list.append(VAC_conducted)  # Record VLV_min_new
 
-# 计算 VLV_min_new 的平均值
+# Calculate the average of VLV_min_new
 VLV_min_avg = np.mean(vlv_min_list)
 
 
-print("所有迭代的 VLV_min_new:", vlv_min_list)
-print("所有迭代的 VAC_new:", VAC_list)
-print("VLV_min_new 的平均值:", VLV_min_avg)
+print("VLV_min_new for all iterations:", vlv_min_list)
+print("VAC_new for all iterations:", VAC_list)
+print("Average of VLV_min_new:", VLV_min_avg)
 
 VLV_N0_manual = VLV_min_new
 Power_lv_N0 = VLV_min_avg**2 / RLV
@@ -473,14 +458,14 @@ Q2eq=w*L2/Req
 #Q2eq=Q2
 V21_q=Vs*k12*sqrt(Q1*Q2eq)*sqrt(Req)/(1+k12**2*Q1*Q2eq)/sqrt(R1)   
 V21=V21_q
-# 定义 a
-#a = R2 / (2 * L2)  # 计算 a
-a = (R2+RSW) / (2 * L2)  # 计算 a
+# Define a
+#a = R2 / (2 * L2)  # Calculate a
+a = (R2+RSW) / (2 * L2)  # Calculate a
 
-# 定义时间范围，修改为从 0 到 1 微秒
-t = np.linspace(0, len(vlv_min_list) / f, 1000)  # 从 0 到 1 微秒
+# Define time range, modified from 0 to 1 microsecond
+t = np.linspace(0, len(vlv_min_list) / f, 1000)  # From 0 to 1 microsecond
 
-# 定义 IL2
+# Define IL2
 #IL2 = (abs(V21) * #       ( (-e**(-t * (a + w)) * (-1 + e**(2 * t * w)))*1 + 2 * np.sin(w * t)) ) / (2 * (Req))
 
 Req=R2+RSW
@@ -559,9 +544,9 @@ print('Il2_t2_lv=',Il2_t2_lv)
 print('VLV_min=',VLV_min)
 print('VLV_min_new=',VLV_min_new)
 print('VLV_stable=',VLV_stable)
-print('N0_lower_manual=',N0_lower_manual)
-print('VLV_N0_manual=',VLV_N0_manual)
-print('PCE_NRZ=', PCE_NRZ)
+#print('N0_lower_manual=',N0_lower_manual)
+#print('VLV_N0_manual=',VLV_N0_manual)
+#print('PCE_NRZ=', PCE_NRZ)
 
 print('')
 print('')
@@ -569,104 +554,11 @@ print('')
 print('')
 
 
-# 生成 VLV 的时间向量（与迭代次数对应），单位为 µs
+# Generate VLV time vector (corresponding to number of iterations), in µs
 t_vlv = np.linspace(0, len(vlv_min_list) / f * 1e6, len(vlv_min_list))  # µs
 t_il2 = t * 1e6  # µs
 
-# 创建主图和右侧 y 轴
-fig, ax1 = plt.subplots(figsize=(10, 6))
 
-# 左侧 Y 轴：绘制 IL2(t)
-color1 = 'tab:blue'
-ax1.set_xlabel('Time (µs)')
-ax1.set_ylabel('$I_{L2}(t)$ (A)', color=color1)
-ax1.plot(t_il2, IL2, label='$I_{L2}(t)$', color=color1)
-ax1.tick_params(axis='y', labelcolor=color1)
-ax1.grid(True)
-
-# 右侧 Y 轴：绘制 VLV(t)
-ax2 = ax1.twinx()
-color2 = 'tab:green'
-ax2.set_ylabel('$V_{LV}(t)$ (V)', color=color2)
-ax2.plot(t_vlv, vlv_min_list, label='$V_{LV}(t)$', color=color2)
-ax2.tick_params(axis='y', labelcolor=color2)
-
-# 设置图标题
-plt.title('$I_{L2}(t)$ and $V_{LV}(t)$ vs Time')
-fig.tight_layout()
-plt.show()
-
-'''
-VZC=0.255
-t3=t1_lv
-# ====================================================================================
-# 以下为根据图中表达式转换的 Python 代码（不影响原有逻辑，仅添加在末尾）：
-# 用于计算电流和电压积分项
-#
-# ∫₀ᵗ₃ [ C_par / (C₂ + C_par) · ∫₀ᵗ i_L2(t) dt ] dt
-# + ∫ₜ₃ᵗ₄ [ i_L2(t) ] dt （假设 V_L2(t) + V_D 为常数，约掉了）
-# ====================================================================================
-
-# 第一个双重积分项近似
-inner_integral = cumtrapz(IL2, t, initial=0)
-outer_integral = cumtrapz((Cpar / (C2 + Cpar)) * inner_integral, t, initial=0)
-integral_part1 = outer_integral[np.searchsorted(t, t3)]
-
-# Second term approximation: single integral from t3 to t4
-t4 = t3 + 1 / f  # Assuming t4 is one period after t3 (user can modify)
-mask = (t >= t3) & (t <= t4)
-integral_part2 = simps(IL2[mask], t[mask])
-
-# Total integral term
-total_integral = integral_part1 + integral_part2
-print("电流和电压的总积分项 total_integral =", total_integral)
-
-# New plot for inner_integral = cumtrapz(IL2*(C2 / (C2 + Cpar)), t, initial=0)
-plt.figure(figsize=(10, 6))
-inner_integral_plot = cumtrapz(1/C2*IL2 * (C2 / (C2 + Cpar)), t, initial=0)
-plt.plot(t_il2, inner_integral_plot, label='$\int I_{L2}(t) \\frac{C_2}{C_2 + C_{par}} dt$')
-plt.xlabel('Time (µs)')
-plt.ylabel('Integral Value')
-plt.title('Plot of $\int I_{L2}(t) \\frac{C_2}{C_2 + C_{par}} dt$')
-plt.grid(True)
-plt.legend()
-plt.show()
-'''
-
-
-
-
-
-
-
-
-
-'''
-
-Dcharge=4.023463e-9/(1/f/2)
-T=1/f/2
-Ta=(T-Dcharge*T)/2
-Td=(T+Dcharge*T)/2
-Ron=RLV*(1/pi*( np.cos(Ta*pi/T) - np.cos(Td*pi/T)    )/np.sin(Ta*pi/T)-Dcharge)
-
-Ploss_r=(vlv_min_list[20]/RLV/Dcharge)**2*Dcharge*Ron
-Ploss_c=Cpar*vlv_min_list[20]**2*2*f
-Power_lv_stable
-Pin=Ploss_r+Ploss_c*0+Power_lv_stable
-PCE=Power_lv_stable/Pin*100
-
-print('PCE=', PCE)
-print('Power_lv_stable=', Power_lv_stable)
-print('Pin=', Pin)
-'''
-
-
-#Dcharge = 4.023463e-9 / (1 / f / 2)
-#Dcharge =tch_lv
-#T_half_period = 1 / f / 2 # Renamed T to T_half_period to avoid conflict with T (period)
-#Ta = (T_half_period - Dcharge * T_half_period) / 2
-#Td = (T_half_period + Dcharge * T_half_period) / 2
-#Ron = RLV * (1 / pi * (np.cos(Ta * pi / T_half_period) - np.cos(Td * pi / T_half_period)) / np.sin(Ta * pi / T_half_period) - Dcharge)
 
 ploss_r_list = []
 ploss_c_list = []
@@ -732,6 +624,57 @@ average_pout = np.mean(pout_list)
 Pin=average_pin
 PCE=average_pout/Pin*100/100
 
-print('PCE=', PCE)
-print('Pout=', average_pout)
-print('Pin=', average_pin)
+#print('PCE=', PCE)
+#print('Pout=', average_pout)
+#print('Pin=', average_pin)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Create main figure and right y-axis
+fig, ax1 = plt.subplots(figsize=(10, 6))
+
+# Left Y-axis: Plot IL2(t)
+color1 = 'tab:blue'
+ax1.set_xlabel('Time (µs)')
+ax1.set_ylabel('$I_{L2}(t)$ (A)', color=color1)
+ax1.plot(t_il2, IL2, label='$I_{L2}(t)$', color=color1)
+ax1.tick_params(axis='y', labelcolor=color1)
+ax1.grid(True)
+
+# Right Y-axis: Plot VLV(t)
+ax2 = ax1.twinx()
+color2 = 'tab:green'
+ax2.set_ylabel('$V_{LV}(t)$ (V)', color=color2)
+ax2.plot(t_vlv, vlv_min_list, label='$V_{LV}(t)$', color=color2)
+ax2.tick_params(axis='y', labelcolor=color2)
+
+# Set plot title
+plt.title('$I_{L2}(t)$ and $V_{LV}(t)$ envelope vs Time')
+
+# Add text annotations for PCE, Pout, and Pin
+text_str = (
+    f'PCE = {PCE:.2%}\n'  # Formats as percentage
+    f'Pout = {average_pout*1000:.2f} mW\n' # Converts to mW
+    f'Pin = {average_pin*1000:.2f} mW'     # Converts to mW
+)
+# Adjust the coordinates (0.05, 0.95) to position the text box
+# 0.05 is 5% from the left edge, 0.95 is 95% from the bottom edge (top of the plot)
+# transform=ax1.transAxes makes the coordinates relative to the axes
+ax1.text(0.05, 0.95, text_str, transform=ax1.transAxes, fontsize=10,
+         verticalalignment='top', bbox=dict(boxstyle='round,pad=0.5', fc='wheat', alpha=0.7))
+
+
+fig.tight_layout()
+plt.show()
