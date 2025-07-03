@@ -74,7 +74,7 @@ VLV=0.9672   #not important
 #VLV_min=0.9647471    ##########################     important      ###################
 
 
-VLV_min=0.848
+VLV_min=0.9647471
 #VLV_min=0.9193
 N0_lower_manual=40  ###############################################                 manual change
 iL2_max=80e-3                   ##########################  important      #######################
@@ -678,8 +678,8 @@ pout_list = []
 
 
 Cgp=631e-15
-#Vhv=2.5
-Vhv=2.753
+Vhv=2.5
+#Vhv=2.753
 
 
 Ploss_c_current = Cpar * Vhv*VAC_conducted * 1 * f
